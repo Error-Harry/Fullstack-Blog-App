@@ -1,22 +1,26 @@
 import React from "react";
+import { format } from "date-fns";
+import { Link } from "react-router-dom";
 
-function Post({title, summary, cover, content, createdAt}) {
+function Post({_id, title, summary, cover, content, createdAt, author }) {
   return (
     <div className="post">
       <div className="image">
-        <img src="https://source.unsplash.com/random/?blog/" alt="" />
+        <Link to={`/post/${_id}`}>
+          <img src={"http://localhost:4000/" + cover} alt="" />
+        </Link>
       </div>
       <div className="text">
-        <h2>{title}</h2>
+        <Link to={`/post/${_id}`}>
+          <h2>{title}</h2>
+        </Link>
         <p className="info">
           <a href="" className="author">
-            Harsh Nargide
+            {author.username}
           </a>
-          <time>{createdAt}</time>
+          <time>{format(new Date(createdAt), "MMM d, yyyy HH:mm")}</time>
         </p>
-        <p className="summary">
-          {summary}
-        </p>
+        <p className="summary">{summary}</p>
       </div>
     </div>
   );
