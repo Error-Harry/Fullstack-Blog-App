@@ -3,8 +3,7 @@ import { Link } from "react-router-dom";
 import { UserContext } from "./UserContext";
 
 function Header() {
-
-  const {setUserInfo, userInfo} = useContext(UserContext);
+  const { setUserInfo, userInfo } = useContext(UserContext);
 
   useEffect(() => {
     fetch("http://localhost:4000/profile", {
@@ -17,9 +16,9 @@ function Header() {
   }, []);
 
   function logout() {
-    fetch('http://localhost:4000/logout', {
-      credentials: 'include',
-      method: 'POST',
+    fetch("http://localhost:4000/logout", {
+      credentials: "include",
+      method: "POST",
     });
     setUserInfo(null);
   }
@@ -34,6 +33,7 @@ function Header() {
       <nav>
         {username && (
           <>
+            <span>Hello, {username}</span>
             <Link to="/create">Create new post</Link>
             <a onClick={logout}>Logout</a>
           </>
