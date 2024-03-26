@@ -6,6 +6,7 @@ function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const {setUserInfo} = useContext(UserContext);
 
   async function login(ev) {
@@ -23,7 +24,7 @@ function LoginPage() {
       });
 
     } else {
-      alert("Wrong credentials");
+      setErrorMessage("wrong credentials");
     }
   }
 
@@ -46,6 +47,7 @@ function LoginPage() {
         value={password}
         onChange={(ev) => setPassword(ev.target.value)}
       />
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
       <button>Login</button>
     </form>
   );

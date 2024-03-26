@@ -185,8 +185,55 @@ div.d-btn {
   color: #fff;
   padding: 10px 30px;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 a svg {
   height: 20px;
+}
+
+.error-message {
+  font-size: 0.9rem;
+  color: #df0a0a;
+}
+
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination button {
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+  text-align: center;
+  width: 2rem;
+  padding: 10px 10px;
+  margin-right: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.search-container {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-container input {
+  margin-right: 5px;
+  padding: 9px;
+}
+
+.search-container button {
+  width: 30px;
+  height: 30px;
+  margin-bottom: 5px;
 }

@@ -1,11 +1,10 @@
-require('dotenv').config();
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const { default: mongoose } = require("mongoose");
 const User = require("./models/User");
 const Post = require("./models/Post");
 const bcrypt = require("bcryptjs");
-
 
 const salt = bcrypt.genSaltSync(10);
 const secret = "asdfghjkl";
@@ -88,27 +87,29 @@ app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
   });
 });
 
-app.put('/post',uploadMiddleware.single('file'), async (req,res) => {
+app.put("/post", uploadMiddleware.single("file"), async (req, res) => {
   let newPath = null;
   if (req.file) {
-    const {originalname, path} = req.file;
-    const parts = originalname.split('.');
+    const { originalname, path } = req.file;
+    const parts = originalname.split(".");
     const ext = parts[parts.length - 1];
-    newPath = path + '.' + ext;
+    newPath = path + "." + ext;
     fs.renameSync(path, newPath);
   }
 
-  const {token} = req.cookies;
-  jwt.verify(token, secret, {}, async (err,info) => {
+  const { token } = req.cookies;
+  jwt.verify(token, secret, {}, async (err, info) => {
     if (err) throw err;
-    const {id, title, summary, content} = req.body;
+    const { id, title, summary, content } = req.body;
     const postDoc = await Post.findById(id);
     if (!postDoc) {
-      return res.status(404).json({message: 'Post not found'});
+      return res.status(404).json({ message: "Post not found" });
     }
     const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
     if (!isAuthor) {
-      return res.status(403).json({message: 'Not authorized to edit this post'});
+      return res
+        .status(403)
+        .json({ message: "Not authorized to edit this post" });
     }
 
     postDoc.title = title;
@@ -120,13 +121,9 @@ app.put('/post',uploadMiddleware.single('file'), async (req,res) => {
   });
 });
 
-
 app.get("/post", async (req, res) => {
   res.json(
-    await Post.find()
-      .populate("author", ["username"])
-      .sort({ createdAt: -1 })
-      .limit(20)
+    await Post.find().populate("author", ["username"]).sort({ createdAt: -1 })
   );
 });
 
@@ -136,5 +133,35 @@ app.get("/post/:id", async (req, res) => {
   res.json(postDoc);
 });
 
+app.delete("/post/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const postDoc = await Post.findById(id);
+  if (!postDoc) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+  const { token } = req.cookies;
+  jwt.verify(token, secret, {}, async (err, info) => {
+    if (err) throw err;
+    const isAuthor = postDoc.author.equals(info.id);
+    if (!isAuthor) {
+      return res
+        .status(403)
+        .json({ error: "Not authorized to delete this post" });
+    }
+    await Post.deleteOne({ _id: id });
+    res.json({ message: "Post deleted successfully" });
+  });
+});
+
+app.get("/search", async (req, res) => {
+  const { query } = req.query;
+
+  const posts = await Post.find({ title: { $regex: new RegExp(query, "i") } })
+    .populate("author", ["username"])
+    .sort({ createdAt: -1 });
+
+  res.json(posts);
+});
 
 app.listen(4000);

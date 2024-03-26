@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { format } from "date-fns";
 import { UserContext } from "../UserContext";
 
 function PostPage() {
   const [postInfo, setPostInfo] = useState(null);
+  const [redirect, setRedirect] = useState(false);
   const { userInfo } = useContext(UserContext);
   const { id } = useParams();
 
@@ -15,6 +16,24 @@ function PostPage() {
       });
     });
   }, []);
+
+  const handleDelete = () => {
+    fetch(`http://localhost:4000/post/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    })
+      .then((response) => {
+        if (response.ok) {
+          setRedirect(true);
+        } else {
+          alert("Unable to delete post");
+        }
+      })
+  };
+
+  if (redirect) {
+    return <Navigate to={"/"} />;
+  }
 
   if (!postInfo) return "";
 
@@ -51,6 +70,13 @@ function PostPage() {
         className="content"
         dangerouslySetInnerHTML={{ __html: postInfo.content }}
       />
+      {userInfo.id === postInfo.author._id && (
+        <div className="delete-btn">
+          <div className="d-btn" onClick={handleDelete}>
+            Delete Post
+          </div>
+        </div>
+      )}
     </div>
   );
 }
