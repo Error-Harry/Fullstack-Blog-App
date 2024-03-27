@@ -225,15 +225,16 @@ a svg {
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
 
 .search-container input {
   margin-right: 5px;
-  padding: 9px;
+  padding: 16px;
 }
 
 .search-container button {
-  width: 30px;
-  height: 30px;
+  width: 50px;
+  height: 50px;
   margin-bottom: 5px;
 }
